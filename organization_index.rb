@@ -50,18 +50,20 @@ class DataGouv_Orgnizations_db
 				package_metadata['result']['resources'].each do |r|
 					resources.push({'url' => r['url'],'filetype' => r['format'] })
 					# p  'org : '+o.to_s+' - pack : '+ pack['name']+'  - rsc : '+r['format'].to_s+' count : '+c.to_s
+				c = c+1
 				end
 				
 				dataset = { 'name' => pack['name'], 'resources' => resources }
 				datasets.push(dataset)
-				File.open(@data_dir+o.to_s+'/'+pack['name']+'.json', 'w') {|f| f.write dataset.to_json }
+			#	File.open(@data_dir+o.to_s+'/'+pack['name']+'.json', 'w') {|f| f.write dataset.to_json }
 			end
 				organization = {'name' => o, 'datasets' => datasets }
 				organizations_full.push(organization)
 				organization_base_set.push('name' => o.to_s, 'length' => organization.length )
-				File.open(@data_dir+o.to_s+'/index.json','w'){|f| f.write orga_index.to_json }
+			#	File.open(@data_dir+o.to_s+'/index.json','w'){|f| f.write orga_index.to_json }
 		end
-			File.open(@data_dir+'/organizations.json','w'){|f| f.write organization_base_set.to_json }
+		#	File.open(@data_dir+'/organizations.json','w'){|f| f.write organization_base_set.to_json }
+			p 'Le compteur indique qu\'il y a '+c+' ressources disponibles via l\'api'
 	end
 	
 	def run
