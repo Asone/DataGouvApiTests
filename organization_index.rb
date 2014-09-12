@@ -63,7 +63,7 @@ class DataGouv_Orgnizations_db
 			#	File.open(@data_dir+o.to_s+'/index.json','w'){|f| f.write orga_index.to_json }
 		end
 		#	File.open(@data_dir+'/organizations.json','w'){|f| f.write organization_base_set.to_json }
-			p 'Le compteur indique qu\'il y a '+c+' ressources disponibles via l\'api'
+			p 'Le compteur indique qu\'il y a '+c.to_s+' ressources disponibles via l\'api'
 	end
 	
 	def run
