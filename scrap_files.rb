@@ -12,7 +12,7 @@ class Files_Scrapper
 		else
 			@status_filter = 'all'
 		end
-		if args[1]
+		if args[1] 
 			@format_filter = args[1]
 		else
 			@format_filter= 'xls'
@@ -30,12 +30,21 @@ class Files_Scrapper
 			files.each do |f|
 				 File.open(f, "r" ) do |ds|
 					 dataset = JSON.load( ds )
-					p dataset
-					  if(dataset['resource'])
+					 
+					  if(dataset['resources'])
 					  case @status_filter
 					  when 'all'
+					  
+					 # p 'process all formats files scrapping...'
 					  when 'open'
+					  
+					  p 'process open format files scrapping...'
 					  when 'crappy'
+					  has_proprietary_format = dataset['resources'].find_index{|r| r['filetype'] == ('XLS'||'xls') }
+					  has_open_format = dataset['resources'].find_index{|r| r['filetype'] == ('csv'||'CSV'||'json'||'JSON'||'xml'||'XML')}
+					 # puts has_format
+					  if(has_proprietary_format != nil)&&(has_open_format == nil)
+					 	p dataset['resources'][has_proprietary_format]['url']
 					  end
 					 if (dataset['resources'].length > 0)
 					#	p dataset['resources'].find_index{|r| r['filetype'] == 'CSV'||'csv' } 
@@ -47,9 +56,11 @@ class Files_Scrapper
 			end
 		end
 	end
-	
-	def run 
+	end
+	end
+	def run
 		download_files()
 	end
 end
+
 Files_Scrapper.new(*ARGV).run()
