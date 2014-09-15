@@ -44,17 +44,19 @@ class DataGouv_Orgnizations_db
 				
 				resources = [] 
 				
-				
+				p pack['name']
 				# @data_dir+o.to_s+'/'+pack['name']+'.json'
-				
+				#p package_metadata['result']
 				package_metadata['result']['resources'].each do |r|
-					resources.push({'url' => r['url'],'filetype' => r['format'] })
+				p r['url']
+					resources.push({'url' => r['url'],'filetype' => r['format'],'name' => r['name'] })
 					# p  'org : '+o.to_s+' - pack : '+ pack['name']+'  - rsc : '+r['format'].to_s+' count : '+c.to_s
 				end
 				
 				dataset = { 'name' => pack['name'], 'resources' => resources }
 				datasets.push(dataset)
 				File.open(@data_dir+o.to_s+'/'+pack['name']+'.json', 'w') {|f| f.write dataset.to_json }
+				sleep(1.0/3.0)
 			end
 				organization = {'name' => o, 'datasets' => datasets }
 				organizations_full.push(organization)
