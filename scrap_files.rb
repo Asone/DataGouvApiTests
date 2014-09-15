@@ -41,10 +41,15 @@ class Files_Scrapper
 						  
 						  p 'process open format files scrapping...'
 						  when 'crappy'
-						  has_proprietary_format = dataset['resources'].find_index{|r| r['filetype'] == ('XLS'||'xls') }
-						  has_open_format = dataset['resources'].find_index{|r| r['filetype'] == ('csv'||'CSV'||'json'||'JSON'||'xml'||'XML'||'zip'||'ZIP'||'api'||'API')}
+						  has_proprietary_format = dataset['resources'].find_index{|r| ['xls'].include?(r['filetype'].downcase) }
+						  has_open_format = dataset['resources'].find_index{|r| ['csv', 'json','xml','html'].include?(r['filetype'].downcase)}
+						p 
 						 # puts has_format
+						
 						  if(has_proprietary_format != nil)&&(has_open_format == nil)
+						   dataset['resources'].each do |r|
+						   p r['filetype']
+						   end
 						  c = c+1
 						 	p dataset['resources'][has_proprietary_format]['url']
 						 	puts 'le compteur indique :'+ c.to_s
