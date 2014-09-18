@@ -12,8 +12,8 @@ class DataGouv_Orgnizations_db
 		  @base_url = "http://www.data.gouv.fr/api/3/action/"
 	    @base_url_qa = "http://qa.data.gouv.fr/api/1/"
 	    @public_url = "http://www.data.gouv.fr/fr/"
-	    @data_dir = File.dirname(__FILE__)+'/data/'
-	    @files_dir = File.dirname(__FILE__)+'/files/'
+	    @data_dir = File.dirname(__FILE__)+'../data/'
+	    @files_dir = File.dirname(__FILE__)+'../files/'
 	    
 	end
 	
@@ -31,7 +31,7 @@ class DataGouv_Orgnizations_db
  			orga_datasets = orga_metadata['value']['packages']
  			 			
  		#	 orga_metadata['value']['name']
- 			p orga_datasets
+ 			# p orga_datasets
  			datasets =  []
  			
  			# build orgnizations folders 
@@ -39,30 +39,34 @@ class DataGouv_Orgnizations_db
  			if Dir.exists?(@data_dir+orga_metadata['value']['name'].to_s) != true
  				FileUtils::mkdir_p @data_dir+o.to_s
  			end
+ 			
+ 			orga_index = {'org' => orga_metadata['value']['name'].to_s, 'packages' => [] }
  #			
- #			orga_index = {'org' => orga_metadata['value']['name'].to_s, 'packages' => [] }
- #			
- #			orga_datasets['result']['packages'].each do |pack|
- #				orga_index['packages'].push(pack['name'])
- #				url = @base_url+'package_show?id='+pack['name']
- #				package_metadata = JSON.parse(Curl.get(url).body_str)
- #				
- #				resources = [] 
- #				
- #				p pack['name']
- #				# @data_dir+o.to_s+'/'+pack['name']+'.json'
- #				#p package_metadata['result']
- #				package_metadata['result']['resources'].each do |r|
- #				p r['url']
- #					resources.push({'url' => r['url'],'filetype' => r['format'],'name' => r['name'] })
- #					# p  'org : '+o.to_s+' - pack : '+ pack['name']+'  - rsc : '+r['format'].to_s+' count : '+c.to_s
- #				end
- #				
- #				dataset = { 'name' => pack['name'], 'resources' => resources }
- #				datasets.push(dataset)
- #				File.open(@data_dir+o.to_s+'/'+pack['name']+'.json', 'w') {|f| f.write dataset.to_json }
- #				sleep(1.0/3.0)
- #			end
+     		if orga_datasets != nil
+	 			orga_datasets.each do |pack|
+	 			# p pack
+	 				orga_index['packages'].push(pack['name'])
+	 				url = @base_url_qa+'datasets/'+pack['id']
+	 				package_metadata = JSON.parse(Curl.get(url).body_str)
+	 				p package_metadata
+	 #				
+	 #				resources = [] 
+	 #				
+	 #				p pack['name']
+	 #				# @data_dir+o.to_s+'/'+pack['name']+'.json'
+	 #				#p package_metadata['result']
+	 #				package_metadata['result']['resources'].each do |r|
+	 #				p r['url']
+	 #					resources.push({'url' => r['url'],'filetype' => r['format'],'name' => r['name'] })
+	 #					# p  'org : '+o.to_s+' - pack : '+ pack['name']+'  - rsc : '+r['format'].to_s+' count : '+c.to_s
+	 #				end
+	 #				
+	 #				dataset = { 'name' => pack['name'], 'resources' => resources }
+	 #				datasets.push(dataset)
+	 #				File.open(@data_dir+o.to_s+'/'+pack['name']+'.json', 'w') {|f| f.write dataset.to_json }
+	 #				sleep(1.0/3.0)
+	 			end
+ 			end
  #				organization = {'name' => o, 'datasets' => datasets }
  #				organizations_full.push(organization)
  #				organization_base_set.push('name' => o.to_s, 'length' => organization.length )
