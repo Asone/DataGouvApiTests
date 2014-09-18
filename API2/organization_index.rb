@@ -19,52 +19,57 @@ class DataGouv_Orgnizations_db
 	
 	def build_full_hierarchy()
 	c = 0
-	url = @base_url+'organization_list'
+	url = @base_url_qa+'organizations'
 	orgas = JSON.parse(Curl.get(url).body_str)
 	organizations_full = []
 	organization_base_set = []
-		orgas['result'].each do |o|
-			
-			url = @base_url+'organization_show?id='+o
-			orga_datasets = JSON.parse(Curl.get(url).body_str)
-			datasets =  []
-			
-			# build orgnizations folders 
-			
-			if Dir.exists?(@data_dir+o.to_s) != true
-				FileUtils::mkdir_p @data_dir+o.to_s
-			end
-			
-			orga_index = {'org' => o.to_s, 'packages' => [] }
-			
-			orga_datasets['result']['packages'].each do |pack|
-				orga_index['packages'].push(pack['name'])
-				url = @base_url+'package_show?id='+pack['name']
-				package_metadata = JSON.parse(Curl.get(url).body_str)
-				
-				resources = [] 
-				
-				p pack['name']
-				# @data_dir+o.to_s+'/'+pack['name']+'.json'
-				#p package_metadata['result']
-				package_metadata['result']['resources'].each do |r|
-				p r['url']
-					resources.push({'url' => r['url'],'filetype' => r['format'],'name' => r['name'] })
-					# p  'org : '+o.to_s+' - pack : '+ pack['name']+'  - rsc : '+r['format'].to_s+' count : '+c.to_s
-				end
-				
-				dataset = { 'name' => pack['name'], 'resources' => resources }
-				datasets.push(dataset)
-				File.open(@data_dir+o.to_s+'/'+pack['name']+'.json', 'w') {|f| f.write dataset.to_json }
-				sleep(1.0/3.0)
-			end
-				organization = {'name' => o, 'datasets' => datasets }
-				organizations_full.push(organization)
-				organization_base_set.push('name' => o.to_s, 'length' => organization.length )
-				File.open(@data_dir+o.to_s+'/index.json','w'){|f| f.write orga_index.to_json }
-		end
-			File.open(@data_dir+'/organizations.json','w'){|f| f.write organization_base_set.to_json }
-	end
+ 		orgas['value'].each do |o|
+ 			
+ 			orga_url = @base_url_qa+'organizations/'+o
+  			# datasets_url = @base_url_qa+'datasets/?organization='
+  			orga_metadata = JSON.parse(Curl.get(orga_url).body_str)
+ 			orga_datasets = orga_metadata['value']['packages']
+ 			 			
+ 		#	 orga_metadata['value']['name']
+ 			p orga_datasets
+ 			datasets =  []
+ 			
+ 			# build orgnizations folders 
+ 			
+ 			if Dir.exists?(@data_dir+orga_metadata['value']['name'].to_s) != true
+ 				FileUtils::mkdir_p @data_dir+o.to_s
+ 			end
+ #			
+ #			orga_index = {'org' => orga_metadata['value']['name'].to_s, 'packages' => [] }
+ #			
+ #			orga_datasets['result']['packages'].each do |pack|
+ #				orga_index['packages'].push(pack['name'])
+ #				url = @base_url+'package_show?id='+pack['name']
+ #				package_metadata = JSON.parse(Curl.get(url).body_str)
+ #				
+ #				resources = [] 
+ #				
+ #				p pack['name']
+ #				# @data_dir+o.to_s+'/'+pack['name']+'.json'
+ #				#p package_metadata['result']
+ #				package_metadata['result']['resources'].each do |r|
+ #				p r['url']
+ #					resources.push({'url' => r['url'],'filetype' => r['format'],'name' => r['name'] })
+ #					# p  'org : '+o.to_s+' - pack : '+ pack['name']+'  - rsc : '+r['format'].to_s+' count : '+c.to_s
+ #				end
+ #				
+ #				dataset = { 'name' => pack['name'], 'resources' => resources }
+ #				datasets.push(dataset)
+ #				File.open(@data_dir+o.to_s+'/'+pack['name']+'.json', 'w') {|f| f.write dataset.to_json }
+ #				sleep(1.0/3.0)
+ #			end
+ #				organization = {'name' => o, 'datasets' => datasets }
+ #				organizations_full.push(organization)
+ #				organization_base_set.push('name' => o.to_s, 'length' => organization.length )
+ #				File.open(@data_dir+o.to_s+'/index.json','w'){|f| f.write orga_index.to_json }
+ 		end
+ #			File.open(@data_dir+'/organizations.json','w'){|f| f.write organization_base_set.to_json }
+ 	end
 	
 	def run
 	 data = build_full_hierarchy()
