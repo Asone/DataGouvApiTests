@@ -42,7 +42,7 @@ class Files_Scrapper
 						  p 'process open format files scrapping...'
 						  when 'crappy'
 						  has_proprietary_format = dataset['resources'].find_index{|r| ['xls'].include?(r['filetype'].downcase) }
-						  has_open_format = dataset['resources'].find_index{|r| ['csv', 'json','xml','html'].include?(r['filetype'].downcase)}
+						  has_open_format = dataset['resources'].find_index{|r| ['csv', 'json','ods','zip'].include?(r['filetype'].downcase)}
 						p 
 						 # puts has_format
 						
