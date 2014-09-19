@@ -44,12 +44,21 @@ class DataGouv_Orgnizations_db
  #			
      		if orga_datasets != nil
 	 			orga_datasets.each do |pack|
-	 			# p pack
+	 		#	 p pack
 	 				orga_index['packages'].push(pack['name'])
+	 				
+	 				#p pack['id']
+	 				
 	 				url = @base_url_qa+'datasets/'+pack['id']
+	 			#	p url
 	 				package_metadata = JSON.parse(Curl.get(url).body_str)
-	 				p package_metadata
-	 #				
+	 				if !package_metadata['error']
+	 				p package_metadata['value']['resources']
+	 				end
+	 			#		p package_metadata
+	 			#	if package_metadata['value']['resources'] != nil
+	 			#		p package_metadata['value']['resources']
+	 			#	end			
 	 #				resources = [] 
 	 #				
 	 #				p pack['name']
@@ -65,14 +74,15 @@ class DataGouv_Orgnizations_db
 	 #				datasets.push(dataset)
 	 #				File.open(@data_dir+o.to_s+'/'+pack['name']+'.json', 'w') {|f| f.write dataset.to_json }
 	 #				sleep(1.0/3.0)
-	 			end
+	 	
  			end
  #				organization = {'name' => o, 'datasets' => datasets }
  #				organizations_full.push(organization)
  #				organization_base_set.push('name' => o.to_s, 'length' => organization.length )
  #				File.open(@data_dir+o.to_s+'/index.json','w'){|f| f.write orga_index.to_json }
- 		end
+ 			end
  #			File.open(@data_dir+'/organizations.json','w'){|f| f.write organization_base_set.to_json }
+ 	end
  	end
 	
 	def run
