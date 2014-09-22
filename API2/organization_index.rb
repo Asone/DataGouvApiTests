@@ -5,6 +5,9 @@ require 'open-uri'
 require 'json'
 require 'curb'
 require 'fileutils'
+require 'yaml'
+
+Conf = YAML.load_file("../config.yml")
 
 class DataGouv_Orgnizations_db
 	
@@ -12,9 +15,8 @@ class DataGouv_Orgnizations_db
 		  @base_url = "http://www.data.gouv.fr/api/3/action/"
 	    @base_url_qa = "http://qa.data.gouv.fr/api/1/"
 	    @public_url = "http://www.data.gouv.fr/fr/"
-	    @data_dir = File.dirname(__FILE__)+'../dataAPI2/'
-	    @files_dir = File.dirname(__FILE__)+'../files/'
-	    
+	    @data_dir = File.dirname(__FILE__)+'/'+Conf[:dir][:data]
+	    @files_dir = File.dirname(__FILE__)+'/'+Conf[:dir][:files]
 	end
 	
 	def build_full_hierarchy()
