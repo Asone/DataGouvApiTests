@@ -1,5 +1,5 @@
 :dir:
-	:data: 'data/'
-	:tmp: '.tmp/'
-	:files: 'files/'
-	:outputs: 'outputs/'
+  :data: 'data/'
+  :tmp: '.tmp/'
+  :files: 'files/'
+  :outputs: 'outputs/'
