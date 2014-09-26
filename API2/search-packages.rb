@@ -18,13 +18,13 @@ Conf = YAML.load_file("../config.yml")
 	def initialize(*args)
 	#p args
 		@api_url = 'http://qa.data.gouv.fr/api/1/datasets?organization='
-		@local_index = Conf[:dir][:data]
+		@local_index = '../'+Conf[:dir][:data]
 		outputs = Conf[:dir][:outputs]
 	end
 	
-	def dispatcher(entity,*keyword)
+	def dispatcher(entity,keyword)
 	
-		if !!keyword
+		if !keyword
 			puts 'missing keyword value. command is : ruby search-packages.rb <type> <keyword>'
 			exit 
 		end
@@ -33,6 +33,13 @@ Conf = YAML.load_file("../config.yml")
 			# search for resources with keyword in description/name 
 			
 			#get organization dirs
+			dirs = Dir[@local_index+'*'].map { |a| File.basename(a) }
+				
+				dirs.each do |d|
+				p d
+				
+				end
+				
 				#loop into organization index json file
 				#look into fields for keyword
 				
@@ -63,8 +70,12 @@ Conf = YAML.load_file("../config.yml")
 	#File.open(@data_dir+orga_metadata['value']['name'].to_s+'/index.json','w'){|f| f.write orga_index.to_json }
 	end
 	
-	def run(*args)
-	dispatcher(args)
+	def run(entity,keyword)
+		if !entity 
+			puts 'missing entity value. command is : ruby search-packages.rb <type> <keyword>'
+			exit
+		end
+		dispatcher(entity,keyword)
 	end
 
 end
