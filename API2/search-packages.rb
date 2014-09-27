@@ -27,11 +27,6 @@ Conf = YAML.load_file("../config.yml")
 	end
 	
 	def dispatcher(entity,keyword)
-	
-		if !keyword
-			puts 'missing keyword value. command is : ruby search-packages.rb <type> <keyword>'
-			exit 
-		end
 		 output = []
 		case entity
 			when 'packages'
@@ -57,12 +52,25 @@ Conf = YAML.load_file("../config.yml")
 					end 
 				end
 			end
-				
-				
-				
-				
+			
 			# search for packages with keyword in name
 			when 'organization'
+				
+				dirs = Dir[@local_index+'*/'].map { |a| File.basename(a) }
+				output = []	
+				
+				dirs.each do |d|
+			
+				if d.include? keyword
+					b = {'org' => d, 'packages' => [] }
+					JSON.load( File.open(@local_index+d+'/index.json', "r" ) )['packages'].each do |pack|
+						b['packages'].push(pack)
+					end
+				output.push(b)
+				
+				end
+				end
+			
 			# search for packages with organization containing keyword
 			when 'resources'
 			# search for resources with keyword in description/name 
