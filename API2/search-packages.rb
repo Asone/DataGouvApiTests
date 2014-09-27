@@ -19,7 +19,11 @@ Conf = YAML.load_file("../config.yml")
 	#p args
 		@api_url = 'http://qa.data.gouv.fr/api/1/datasets?organization='
 		@local_index = '../'+Conf[:dir][:data]
-		outputs = Conf[:dir][:outputs]
+		if !ARGV[2]
+		@outputs = '../'+Conf[:dir][:outputs]+'output-'+ARGV[1]+'-'+ARGV[0]+'.json'
+		else
+		@outputs = ARGV[2] 
+		end  
 	end
 	
 	def dispatcher(entity,keyword)
@@ -36,24 +40,27 @@ Conf = YAML.load_file("../config.yml")
 			
 			#get organization dirs
 			dirs = Dir[@local_index+'*/'].map { |a| File.basename(a) }
+			dirs.each do |d|
 				
-				dirs.each do |d|
-					File.open(@local_index+d+'/index.json', "r" ) do |org_idx|
-						JSON.load( org_idx )['packages'].each do |pack|
+				#loop into organizations index json files
+				File.open(@local_index+d+'/index.json', "r" ) do |org_idx|
+				b = {'org' => d, 'packages' => [] }
+					JSON.load( org_idx )['packages'].each do |pack|
+						#look into fields for keyword
 						if pack.include? keyword
-						p pack
+						 #if matching store into hash
+						 b['packages'].push(pack)
 						end
 					end
-					
-					
+					if b['packages'].length > 0
+						output.push(b)
+					end 
 				end
-				end
+			end
 				
-				#loop into organization index json file
-				#look into fields for keyword
 				
-				#if matching store into hash
-				#write json output in to output folder
+				
+				
 			# search for packages with keyword in name
 			when 'organization'
 			# search for packages with organization containing keyword
@@ -69,6 +76,11 @@ Conf = YAML.load_file("../config.yml")
 			else
 			#other commands
 		end
+		if output.length > 0
+		
+		 File.open(@outputs,'w'){|f| f.write output.to_json }
+
+		end
 	end
 	
 	def search_error(type)
@@ -76,7 +88,7 @@ Conf = YAML.load_file("../config.yml")
 	
 	def generate_output
 	
-	#File.open(@data_dir+orga_metadata['value']['name'].to_s+'/index.json','w'){|f| f.write orga_index.to_json }
+	#File.open('','w'){|f| f.write orga_index.to_json }
 	end
 	
 	def run(entity,keyword)
