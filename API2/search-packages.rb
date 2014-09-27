@@ -28,16 +28,25 @@ Conf = YAML.load_file("../config.yml")
 			puts 'missing keyword value. command is : ruby search-packages.rb <type> <keyword>'
 			exit 
 		end
+		 output = []
 		case entity
 			when 'packages'
+			
 			# search for resources with keyword in description/name 
 			
 			#get organization dirs
-			dirs = Dir[@local_index+'*'].map { |a| File.basename(a) }
+			dirs = Dir[@local_index+'*/'].map { |a| File.basename(a) }
 				
 				dirs.each do |d|
-				p d
-				
+					File.open(@local_index+d+'/index.json', "r" ) do |org_idx|
+						JSON.load( org_idx )['packages'].each do |pack|
+						if pack.include? keyword
+						p pack
+						end
+					end
+					
+					
+				end
 				end
 				
 				#loop into organization index json file
@@ -72,7 +81,7 @@ Conf = YAML.load_file("../config.yml")
 	
 	def run(entity,keyword)
 		if !entity 
-			puts 'missing entity value. command is : ruby search-packages.rb <type> <keyword>'
+	
 			exit
 		end
 		dispatcher(entity,keyword)
@@ -80,4 +89,8 @@ Conf = YAML.load_file("../config.yml")
 
 end
 #p ARGV
-DataGouvSearch.new(*ARGV).run(*ARGV[0],*ARGV[1])
+if !ARGV||!ARGV[0]||!ARGV[1]
+	puts 'missing parameter value. command is : ruby search-packages.rb <type> <keyword>'
+else
+	DataGouvSearch.new(*ARGV).run(*ARGV[0],*ARGV[1])
+end
